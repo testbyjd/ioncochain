@@ -71,3 +71,9 @@ The source used HTTP for some social links; the redesign uses the equivalent HTT
 ## Original visual assets
 
 The cyan glass orbit was generated specifically for this redesign and optimized into local WebP assets. The hero is decorative, not factual imagery. The Manrope variable font is served locally. No old theme artwork, brand endorsements, testimonials, financial performance claims, or fake live network statistics were invented.
+
+## Homepage expansion
+
+The expanded homepage brings the already collected source material into dedicated network, ecosystem, use-case, and builder sections. The four use-case tabs describe the original vision for finance, gaming, digital assets, and supply chains. Their three-step journeys are illustrative explanations, not claims about deployed applications. Published node roles are labeled as historical infrastructure, with current health unverified.
+
+Two additional original CGI artworks were generated for this update: an interconnected glass network and a crystalline digital-ownership composition. Both are decorative conceptual artwork, not technical diagrams or evidence of operating infrastructure. They are served locally as `ionco-network.webp` and `ionco-ownership.webp`, with 720-pixel mobile alternatives selected through responsive image attributes. Together the mobile variants are approximately 110 KiB; both load lazily.

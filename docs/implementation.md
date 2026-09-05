@@ -30,3 +30,11 @@ CSV downloads escape quotes and neutralize spreadsheet-formula prefixes in strin
 ## Deployment boundary
 
 The private preview uses the bundled Vinext/Cloudflare build. The repository also supports standard Next.js scripts. The admin route is deliberately a demo without authentication. Do not mistake private preview access, frontend controls, or browser storage for a production authorization or custody implementation.
+
+## Expanded homepage
+
+Homepage sections live in `components/ionco/marketing.tsx` and `marketing-sections.tsx`; the visual refinements are isolated in `app/marketing.css`. The page includes quick access links, two original visual ecosystem cards, four keyboard-accessible use-case tabs, published network specifications and topology, dashboard entry points, token utilities and allocation, builder resources, historical roadmap, FAQs, and community channels.
+
+The hero uses a content-sized grid instead of the earlier fixed 890-pixel mobile minimum. Mobile section spacing is 44 pixels, with stacked layouts and reserved image dimensions. The two additional images use responsive WebP sources and lazy loading. No dependency was added.
+
+Scroll-entry effects progressively enhance already-visible server-rendered content. Ambient hero motion can be paused, stops while offscreen or in a hidden tab, and respects the operating system’s reduced-motion preference. Use-case tabs use the existing shadcn/Radix primitive. Existing dashboard state, CMS fields, and admin behavior are preserved.

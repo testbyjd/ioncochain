@@ -6,16 +6,20 @@ import {
   ArrowUpRight,
   Orbit,
   Layers3,
-  Code2,
-  Fingerprint,
   Globe2,
   Coins,
   ShieldCheck,
   Hash,
   Menu,
-  Check,
   Info,
   ChevronDown,
+  Pause,
+  Play,
+  Wallet,
+  ArrowLeftRight,
+  Send,
+  MessageCircle,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,12 +43,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ALLOCATIONS, LINKS } from "@/lib/ionco-data";
+import { ALLOCATIONS, LINKS, NETWORK } from "@/lib/ionco-data";
 import { useDemo } from "./demo-provider";
 import { Logo, NetworkDialog } from "./shared";
+import {
+  HomepageMotion,
+  QuickAccess,
+  EcosystemSection,
+  UseCasesSection,
+  NetworkSection,
+  BuilderSection,
+} from "./marketing-sections";
 const navigation = [
   { label: "Ecosystem", href: "/#ecosystem" },
+  { label: "Network", href: "/#network" },
   { label: "INC coin", href: "/#tokenomics" },
+  { label: "Builders", href: "/#builders" },
   { label: "Roadmap", href: "/#roadmap" },
 ];
 const roadmap = [
@@ -120,8 +134,10 @@ const faqs = [
 export function MarketingSite() {
   const { state } = useDemo();
   const [networkOpen, setNetworkOpen] = useState(false);
+  const [motionPaused, setMotionPaused] = useState(false);
   return (
-    <div className="marketing-site">
+    <div className="marketing-site marketing-v2">
+      <HomepageMotion />
       <header className="site-header">
         <div className="container-wide">
           <Logo />
@@ -210,22 +226,7 @@ export function MarketingSite() {
       </header>
       <main id="main">
         <section className="hero">
-          <picture>
-            <source
-              media="(max-width:767px)"
-              srcSet="/images/ionco-orbit-mobile.webp"
-            />
-            <img
-              src="/images/ionco-orbit.webp"
-              width="1536"
-              height="1024"
-              fetchPriority="high"
-              alt="Sculptural glass orbit illuminated in electric cyan"
-              className="hero-art"
-            />
-          </picture>
-          <div className="hero-shade" />
-          <div className="container-wide">
+          <div className="container-wide hero-layout">
             <div className="hero-copy reveal">
               {state.content.announcement && (
                 <a className="announcement" href="#ecosystem">
@@ -245,7 +246,7 @@ export function MarketingSite() {
               <p className="hero-description">{state.content.description}</p>
               <div className="hero-buttons">
                 <Link href="/dashboard" className="btn-primary">
-                  Explore the ecosystem <ArrowUpRight />
+                  Explore the app <ArrowUpRight />
                 </Link>
                 <a
                   href={LINKS.whitepaper}
@@ -256,16 +257,84 @@ export function MarketingSite() {
                   Read whitepaper <ArrowRight />
                 </a>
               </div>
-              <div className="hero-foot">
-                <ShieldCheck />
-                Built around transparency. Designed around you.
+              <div
+                className="hero-capabilities"
+                aria-label="IONCO ecosystem themes"
+              >
+                <span>
+                  <Layers3 /> Smart contracts
+                </span>
+                <span>
+                  <Coins /> Digital assets
+                </span>
+                <span>
+                  <Globe2 /> Connected experiences
+                </span>
               </div>
             </div>
-          </div>
-          <div className="hero-caption">
-            <Orbit strokeWidth={1} />
-            <div>
-              BEYOND THE ORDINARY<span>The IONCO ecosystem</span>
+            <div className="hero-visual" data-paused={motionPaused}>
+              <picture>
+                <source
+                  media="(max-width:767px)"
+                  srcSet="/images/ionco-orbit-mobile.webp"
+                />
+                <img
+                  src="/images/ionco-orbit.webp"
+                  width="1536"
+                  height="1024"
+                  fetchPriority="high"
+                  alt="Sculptural glass orbit illuminated in electric cyan"
+                  className="hero-art"
+                />
+              </picture>
+              <div className="hero-visual-top">
+                <span>
+                  <Orbit /> IONCO SMARTCHAIN
+                </span>
+                <button
+                  onClick={() => setMotionPaused(!motionPaused)}
+                  aria-label={
+                    motionPaused
+                      ? "Play ambient animation"
+                      : "Pause ambient animation"
+                  }
+                >
+                  {motionPaused ? <Play /> : <Pause />}
+                </button>
+              </div>
+              <div className="hero-orbit-label">
+                <span>INC</span>
+                <div>
+                  ONE NATIVE ASSET
+                  <br />
+                  <strong>A world of possibilities.</strong>
+                </div>
+              </div>
+              <div className="hero-network-card">
+                <div className="hero-card-heading">
+                  <span>THE FOUNDATION OF IONCO</span>
+                  <button
+                    onClick={() => setNetworkOpen(true)}
+                    aria-label="View published network details"
+                  >
+                    <ArrowUpRight />
+                  </button>
+                </div>
+                <dl>
+                  <div>
+                    <dt>Native coin</dt>
+                    <dd>INC</dd>
+                  </div>
+                  <div>
+                    <dt>Consensus</dt>
+                    <dd>PoA</dd>
+                  </div>
+                  <div>
+                    <dt>Chain ID</dt>
+                    <dd>{NETWORK.chainId}</dd>
+                  </div>
+                </dl>
+              </div>
             </div>
           </div>
         </section>
@@ -277,12 +346,12 @@ export function MarketingSite() {
                 value: "250M",
                 label: "INC · stated supply, approx.",
               },
-              { icon: Orbit, value: "INC", label: "One native asset" },
+              { icon: Orbit, value: "2023", label: "Established in November" },
               { icon: ShieldCheck, value: "PoA", label: "Proof of Authority" },
               {
                 icon: Hash,
-                value: "13152",
-                label: "Published network chain ID",
+                value: "IRC20",
+                label: "Published token standard",
               },
             ].map((s) => (
               <div className="network-stat" key={s.value}>
@@ -296,80 +365,13 @@ export function MarketingSite() {
           </div>
         </section>
         <div className="container-wide">
-          <section className="section" id="ecosystem">
-            <div className="section-head">
-              <div>
-                <div className="eyebrow">THE IONCO ECOSYSTEM</div>
-                <h2>
-                  One chain.
-                  <br />A world of possibility.
-                </h2>
-              </div>
-              <p className="section-description">
-                From the way you transact to the things you create. Discover the
-                building blocks of IONCO’s vision.
-              </p>
-            </div>
-            <div className="bento">
-              {[
-                {
-                  icon: Globe2,
-                  no: "01",
-                  title: "Connected by possibility",
-                  description:
-                    "An ecosystem envisioned for decentralized finance, gaming, and everyday digital experiences.",
-                  large: true,
-                },
-                {
-                  icon: Code2,
-                  no: "02",
-                  title: "Code that connects",
-                  description:
-                    "Smart contracts bring agreements into code, opening new ways to build on the network.",
-                  large: false,
-                },
-                {
-                  icon: Fingerprint,
-                  no: "03",
-                  title: "A new kind of ownership",
-                  description:
-                    "Explore digital assets and tokenization, with ownership at the heart of the experience.",
-                  large: false,
-                },
-              ].map((f) => (
-                <article
-                  className={`feature-card ${f.large ? "feature-large" : ""}`}
-                  key={f.no}
-                >
-                  <span className="card-number">/{f.no}</span>
-                  <div className="feature-icon">
-                    <f.icon strokeWidth={1.4} />
-                  </div>
-                  <h3>{f.title}</h3>
-                  <p>{f.description}</p>
-                  {f.large ? (
-                    <div className="feature-chips">
-                      <span>DeFi</span>
-                      <span>Digital assets</span>
-                      <span>dApps</span>
-                    </div>
-                  ) : (
-                    <a
-                      href={LINKS.technology}
-                      className="text-link"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Explore the technology <ArrowUpRight />
-                    </a>
-                  )}
-                </article>
-              ))}
-            </div>
-          </section>
-          <section className="staking-intro" id="staking">
+          <QuickAccess />
+          <EcosystemSection />
+          <UseCasesSection />
+          <NetworkSection onNetworkDetails={() => setNetworkOpen(true)} />
+          <section className="staking-intro" id="staking" data-reveal>
             <div>
-              <div className="eyebrow">MORE FROM YOUR INC</div>
+              <div className="eyebrow">04 / EXPLORE THE APP</div>
               <h2>
                 Your next move.
                 <br />
@@ -379,15 +381,31 @@ export function MarketingSite() {
                 A clearer view of your assets. Explore staking pools, preview a
                 trade, and follow every move from your own IONCO dashboard.
               </p>
-              <div className="intro-steps">
-                <span>
-                  <Check />
-                  Connect a demo wallet
-                </span>
-                <span>
-                  <Check />
-                  Explore your options
-                </span>
+              <div className="app-feature-links">
+                <Link href="/dashboard/wallet">
+                  <Wallet />
+                  <div>
+                    <strong>A home for your assets</strong>
+                    <span>Balances, rewards, and activity in one view.</span>
+                  </div>
+                  <ArrowUpRight />
+                </Link>
+                <Link href="/dashboard/trade">
+                  <ArrowLeftRight />
+                  <div>
+                    <strong>Buy & sell, made clear</strong>
+                    <span>Preview an INC trade before confirming.</span>
+                  </div>
+                  <ArrowUpRight />
+                </Link>
+                <Link href="/dashboard/staking">
+                  <Layers3 />
+                  <div>
+                    <strong>Find your staking rhythm</strong>
+                    <span>Compare flexible and fixed-term demo pools.</span>
+                  </div>
+                  <ArrowUpRight />
+                </Link>
               </div>
               <Link href="/dashboard/staking" className="btn-primary">
                 Discover staking <ArrowUpRight />
@@ -429,20 +447,31 @@ export function MarketingSite() {
               </div>
             </div>
           </section>
-          <section className="section" id="tokenomics">
+          <section className="section" id="tokenomics" data-reveal>
             <div className="section-head">
               <div>
-                <div className="eyebrow">THE NATIVE ASSET</div>
+                <div className="eyebrow">05 / THE NATIVE ASSET</div>
                 <h2>
-                  Small symbol.
+                  INC. The asset
                   <br />
-                  Big possibilities.
+                  behind the ecosystem.
                 </h2>
               </div>
               <p className="section-description">
                 Meet INC. The native asset at the center of IONCO’s network,
                 transactions, and ecosystem.
               </p>
+            </div>
+            <div className="token-utility-strip">
+              <span>
+                <Coins /> Native currency <strong>INC</strong>
+              </span>
+              <span>
+                <Layers3 /> Token standard <strong>IRC20</strong>
+              </span>
+              <span>
+                <Globe2 /> Network <strong>IONCO SmartChain</strong>
+              </span>
             </div>
             <div className="token-section">
               <div className="token-chart-block">
@@ -485,10 +514,11 @@ export function MarketingSite() {
               </div>
             </div>
           </section>
-          <section className="section" id="roadmap">
+          <BuilderSection onNetworkDetails={() => setNetworkOpen(true)} />
+          <section className="section" id="roadmap" data-reveal>
             <div className="section-head">
               <div>
-                <div className="eyebrow">THE JOURNEY</div>
+                <div className="eyebrow">07 / THE JOURNEY</div>
                 <h2>A vision in motion.</h2>
               </div>
               <p className="section-description">
@@ -514,9 +544,9 @@ export function MarketingSite() {
               completion and current availability are unverified.
             </p>
           </section>
-          <section className="section faq-section" id="faq">
+          <section className="section faq-section" id="faq" data-reveal>
             <div>
-              <div className="eyebrow">A LITTLE CLARITY</div>
+              <div className="eyebrow">08 / A LITTLE CLARITY</div>
               <h2>
                 Good questions.
                 <br />
@@ -547,27 +577,65 @@ export function MarketingSite() {
               ))}
             </Accordion>
           </section>
-          <section className="community-cta">
-            <div>
-              <h2>
-                The next chapter
-                <br />
-                starts with you.
-              </h2>
-              <p>Explore the ecosystem. Find your place in it.</p>
-            </div>
-            <div className="hero-buttons">
+          <section className="community-cta" data-reveal>
+            <div className="community-top">
+              <div>
+                <div className="eyebrow">THE NEXT CHAPTER IS OURS</div>
+                <h2>
+                  Find your people.
+                  <br />
+                  <span>Build your possibilities.</span>
+                </h2>
+                <p>
+                  Step into the IONCO community and explore the project
+                  together.
+                </p>
+              </div>
               <Link href="/dashboard" className="btn-primary">
                 Enter the app <ArrowUpRight />
               </Link>
-              <a
-                href="https://t.me/+FxQ-jbWIuBZiZjM0"
-                target="_blank"
-                rel="noreferrer"
-                className="btn-secondary"
-              >
-                Join the community <ArrowUpRight />
-              </a>
+            </div>
+            <div className="community-channels">
+              {[
+                {
+                  icon: Send,
+                  name: "Telegram",
+                  detail: "Join the conversation",
+                  href: "https://t.me/+FxQ-jbWIuBZiZjM0",
+                },
+                {
+                  icon: MessageCircle,
+                  name: "X / Twitter",
+                  detail: "Follow the project",
+                  href: "https://twitter.com/IoncoChain",
+                },
+                {
+                  icon: Users,
+                  name: "Discord",
+                  detail: "Meet the community",
+                  href: "https://discord.gg/BjFP3uPtz7",
+                },
+                {
+                  icon: Globe2,
+                  name: "LinkedIn",
+                  detail: "Stay connected",
+                  href: "https://www.linkedin.com/in/ionco-chain-474b34257",
+                },
+              ].map((channel) => (
+                <a
+                  href={channel.href}
+                  key={channel.name}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <channel.icon />
+                  <div>
+                    <strong>{channel.name}</strong>
+                    <span>{channel.detail}</span>
+                  </div>
+                  <ArrowUpRight />
+                </a>
+              ))}
             </div>
           </section>
         </div>
