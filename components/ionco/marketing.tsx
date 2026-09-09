@@ -138,6 +138,7 @@ export function MarketingSite() {
   return (
     <div className="marketing-site marketing-v2">
       <HomepageMotion />
+      <div className="scroll-progress" aria-hidden="true" />
       <header className="site-header">
         <div className="container-wide">
           <Logo />
@@ -345,8 +346,14 @@ export function MarketingSite() {
                 icon: Coins,
                 value: "250M",
                 label: "INC · stated supply, approx.",
+                countTo: 250,
+                countSuffix: "M",
               },
-              { icon: Orbit, value: "2023", label: "Established in November" },
+              {
+                icon: Orbit,
+                value: "2023",
+                label: "Established in November",
+              },
               { icon: ShieldCheck, value: "PoA", label: "Proof of Authority" },
               {
                 icon: Hash,
@@ -357,7 +364,12 @@ export function MarketingSite() {
               <div className="network-stat" key={s.value}>
                 <div className="stat-top">
                   <s.icon />
-                  <strong>{s.value}</strong>
+                  <strong
+                    data-count-to={s.countTo}
+                    data-count-suffix={s.countSuffix}
+                  >
+                    {s.value}
+                  </strong>
                 </div>
                 <p>{s.label}</p>
               </div>
@@ -414,7 +426,7 @@ export function MarketingSite() {
                 Interactive demo · illustrative rates and balances
               </div>
             </div>
-            <div className="staking-preview">
+            <div className="staking-preview" data-spotlight>
               <div className="preview-heading">
                 <h3 className="flex gap-2 items-center">
                   <Orbit size={19} className="accent-text" />
@@ -473,7 +485,7 @@ export function MarketingSite() {
                 <Globe2 /> Network <strong>IONCO SmartChain</strong>
               </span>
             </div>
-            <div className="token-section">
+            <div className="token-section" data-spotlight>
               <div className="token-chart-block">
                 <div
                   className="donut"
@@ -577,7 +589,7 @@ export function MarketingSite() {
               ))}
             </Accordion>
           </section>
-          <section className="community-cta" data-reveal>
+          <section className="community-cta" data-reveal data-spotlight>
             <div className="community-top">
               <div>
                 <div className="eyebrow">THE NEXT CHAPTER IS OURS</div>
@@ -641,6 +653,9 @@ export function MarketingSite() {
         </div>
       </main>
       <footer className="site-footer">
+        <span className="footer-watermark" aria-hidden="true">
+          IONCO
+        </span>
         <div className="container-wide">
           <div className="footer-top">
             <div className="footer-brand">

@@ -1,0 +1,1208 @@
+/* ==========================================================================
+   IONCO — premium finishing layer.
+   Loaded after globals.css and marketing.css. Adds atmosphere, a shared
+   surface treatment, section rhythm, and motion. Layout stays where the
+   earlier files put it; this file only refines how it reads.
+   ========================================================================== */
+
+.marketing-v2 {
+  --glow-cyan: #64e5e4;
+  --glow-soft: #64e5e41f;
+  --surface-1: #0b1418;
+  --surface-2: #0e1a20;
+  --edge: #ffffff0f;
+  --edge-strong: #ffffff1f;
+  --sheen: linear-gradient(180deg, #ffffff0a, #ffffff00 140px);
+  --lift: 0 24px 60px -28px #000000cc;
+  --lift-hover: 0 30px 70px -26px #000000e6, 0 0 0 1px #64e5e41f;
+}
+
+/* --- Atmosphere ---------------------------------------------------------- */
+
+/* Aurora field. Fixed so it reads as depth behind the page, not as a texture
+   that scrolls with the copy. */
+.marketing-v2::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      54vw 48vw at 78% -8%,
+      #10707f52,
+      transparent 62%
+    ),
+    radial-gradient(42vw 42vw at 2% 20%, #134a5c40, transparent 62%),
+    radial-gradient(48vw 40vw at 98% 62%, #114a5a36, transparent 62%),
+    radial-gradient(42vw 38vw at 8% 88%, #0e425730, transparent 62%);
+}
+
+/* Film grain. Sits above the content but never intercepts a pointer. Radix
+   overlays are portalled to <body>, so dialogs and sheets stay clean. */
+.marketing-v2::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0.032;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.marketing-v2 > main,
+.marketing-v2 > footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Reading rail: a hairline that runs the height of the content column and
+   gives the long scroll a spine. */
+.marketing-v2 > main > .container-wide {
+  position: relative;
+}
+
+/* --- Scroll progress ----------------------------------------------------- */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  z-index: 45;
+  pointer-events: none;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--progress, 0));
+  background: linear-gradient(90deg, #2a8f9b, #64e5e4 55%, #a9fbf3);
+  box-shadow: 0 0 14px #64e5e455;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.marketing-v2[data-scrolled="true"] .scroll-progress {
+  opacity: 1;
+}
+
+/* --- Header -------------------------------------------------------------- */
+
+.marketing-v2 .site-header {
+  z-index: 35;
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease,
+    height 0.35s ease,
+    box-shadow 0.35s ease;
+}
+.marketing-v2[data-scrolled="true"] .site-header {
+  height: 68px;
+  background: #060a0bd6;
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom-color: #ffffff12;
+  box-shadow: 0 12px 40px -24px #000;
+}
+
+.marketing-v2 .site-nav a,
+.marketing-v2 .site-nav [data-slot="dropdown-menu-trigger"] {
+  position: relative;
+  padding: 6px 2px;
+  color: #93a8ae;
+}
+.marketing-v2 .site-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, #64e5e4, transparent);
+  transform: scaleX(0);
+  transition:
+    transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.32s;
+  opacity: 0;
+}
+.marketing-v2 .site-nav a:hover::after,
+.marketing-v2 .site-nav a[data-active="true"]::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+.marketing-v2 .site-nav a[data-active="true"] {
+  color: #e8f6f7;
+}
+
+.marketing-v2 .logo-mark {
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  filter: drop-shadow(0 0 12px #64e5e43d);
+}
+.marketing-v2 .logo:hover .logo-mark {
+  transform: rotate(-16deg) scale(1.06);
+}
+
+/* --- Buttons ------------------------------------------------------------- */
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(175deg, #8bf3ee 0%, #57dcdb 48%, #3fc6cd 100%);
+  border-color: #9df6f0;
+  color: #04262a;
+  box-shadow:
+    0 1px 0 0 #ffffff80 inset,
+    0 10px 30px -12px #64e5e466;
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-130%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent, #ffffff5c, transparent);
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.btn-primary:hover {
+  background: linear-gradient(175deg, #a4f8f2 0%, #6ee9e6 48%, #4dd6dc 100%);
+  box-shadow:
+    0 1px 0 0 #ffffff99 inset,
+    0 16px 44px -12px #64e5e480;
+}
+.btn-primary:hover::after {
+  transform: translateX(130%) skewX(-18deg);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  position: relative;
+  background: #ffffff05;
+  border-color: transparent;
+  box-shadow: 0 1px 0 0 #ffffff0d inset;
+  transition:
+    background 0.25s,
+    transform 0.25s;
+}
+.btn-secondary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(150deg, #ffffff3d, #ffffff10 45%, #64e5e42e);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+.btn-secondary:hover {
+  background: #ffffff0f;
+  transform: translateY(-2px);
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+
+.marketing-v2 .hero {
+  padding-bottom: 8px;
+}
+
+/* Faint field lines behind the headline give the flat black some structure. */
+.marketing-v2 .hero-copy::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -80px -40px -40px -180px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(#ffffff08 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+  background-size: 62px 62px;
+  mask-image: radial-gradient(
+    ellipse 62% 58% at 26% 46%,
+    #000 0%,
+    transparent 72%
+  );
+}
+
+.marketing-v2 .announcement {
+  position: relative;
+  overflow: hidden;
+  background: #12212666;
+  border-color: #ffffff1f;
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    transform 0.25s;
+}
+.marketing-v2 .announcement:hover {
+  border-color: #64e5e44d;
+  background: #16292f99;
+  transform: translateY(-1px);
+}
+.marketing-v2 .announcement > span {
+  background: linear-gradient(120deg, #1d4a4d, #2b6a68);
+  color: #a8fbf2;
+  box-shadow: 0 0 0 1px #64e5e42e inset;
+}
+.marketing-v2 .announcement svg {
+  transition: transform 0.25s;
+}
+.marketing-v2 .announcement:hover svg {
+  transform: translateX(3px);
+}
+
+.marketing-v2 .hero h1 em {
+  background-image: linear-gradient(
+    102deg,
+    #ffffff 0%,
+    #b6dce0 42%,
+    #64e5e4 78%,
+    #9df3ee 100%
+  );
+}
+
+@media (min-width: 768px) {
+  .marketing-v2 .hero-visual {
+    --bleed: calc((100vw - min(1320px, 100vw)) / 2 + 48px);
+    height: 556px;
+    margin-right: calc(-1 * var(--bleed));
+  }
+  .marketing-v2 .hero-network-card,
+  .marketing-v2 .hero-visual-top {
+    right: calc(8px + var(--bleed));
+  }
+}
+
+/* A pool of light under the orbit so the artwork sits in the page rather
+   than on top of it. */
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  z-index: -3;
+  inset: 4% -6% 6% 10%;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 62% 46%,
+    #1d8f9b52,
+    #0e4a5326 45%,
+    transparent 70%
+  );
+  filter: blur(28px);
+}
+
+/* Soften the top and right crop of the artwork, not just the left/bottom. */
+.hero-visual::after {
+  background:
+    linear-gradient(90deg, #060a0b, transparent 22%),
+    linear-gradient(0deg, #060a0b, transparent 26%),
+    linear-gradient(180deg, #060a0bd9, transparent 20%);
+}
+
+.hero-visual-top > span {
+  padding: 6px 12px 6px 8px;
+  border-radius: 30px;
+  border: 1px solid #ffffff17;
+  background: #0a161bb3;
+  backdrop-filter: blur(10px);
+}
+
+/* The INC caption used to sit straight on the brightest part of the render.
+   Give it a glass plate so it stays legible against any frame of the art. */
+.hero-orbit-label {
+  bottom: 200px;
+  padding: 10px 16px 10px 14px;
+  border-radius: 14px;
+  border: 1px solid #ffffff14;
+  background: linear-gradient(120deg, #08151ac7, #0a1a2199);
+  backdrop-filter: blur(14px) saturate(130%);
+  box-shadow:
+    0 1px 0 0 #ffffff12 inset,
+    0 18px 40px -22px #000;
+}
+.hero-orbit-label > span {
+  background: linear-gradient(160deg, #ffffff, #7fe9e6);
+  background-clip: text;
+  color: transparent;
+}
+.hero-orbit-label > div {
+  border-left-color: #ffffff1f;
+}
+
+.hero-network-card {
+  border-color: #ffffff17;
+  background: linear-gradient(125deg, #0a1a20e6, #071116e6);
+  box-shadow:
+    0 1px 0 0 #ffffff14 inset,
+    0 26px 60px -30px #000;
+}
+.hero-network-card dl > div + div {
+  border-left-color: #ffffff14;
+}
+.hero-network-card dd {
+  background: linear-gradient(170deg, #ffffff, #a9d6da);
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Network strip ------------------------------------------------------- */
+
+.marketing-v2 .network-strip {
+  position: relative;
+  border-color: #ffffff0f;
+  background: linear-gradient(180deg, #0a1214a6, #070d0fa6);
+}
+.marketing-v2 .network-strip::before,
+.marketing-v2 .network-strip::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #64e5e438, transparent);
+}
+.marketing-v2 .network-strip::before {
+  top: -1px;
+}
+.marketing-v2 .network-strip::after {
+  bottom: -1px;
+}
+.marketing-v2 .network-stat {
+  border-left-color: #ffffff0f;
+}
+.marketing-v2 .network-stat strong {
+  background: linear-gradient(170deg, #ffffff, #9fc2c7);
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.marketing-v2 .network-stat svg {
+  color: #6fbfc7;
+  transition: transform 0.35s;
+}
+.marketing-v2 .network-stat:hover svg {
+  transform: translateY(-2px);
+}
+
+/* --- Section rhythm ------------------------------------------------------ */
+
+.marketing-v2 .section,
+.marketing-v2 .staking-intro {
+  position: relative;
+  padding-top: 96px;
+}
+.marketing-v2 .section::before,
+.marketing-v2 .staking-intro::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    #ffffff00,
+    #ffffff1a 18%,
+    #64e5e42e 50%,
+    #ffffff1a 82%,
+    #ffffff00
+  );
+}
+.marketing-v2 #ecosystem::before {
+  display: none;
+}
+
+.marketing-v2 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #7fd6d9;
+}
+.marketing-v2 .eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, #64e5e4, #64e5e400);
+}
+
+.marketing-v2 .section-description {
+  color: #9bb0b7;
+}
+.marketing-v2 .source-caption,
+.marketing-v2 .history-note,
+.marketing-v2 .token-note,
+.marketing-v2 .builder-foot {
+  color: #91a7b0;
+}
+.marketing-v2 .ecosystem-card-body p,
+.marketing-v2 .use-case-copy > p,
+.marketing-v2 .builder-resource-list p,
+.marketing-v2 .app-feature-links span {
+  color: #a1b5bc;
+}
+
+/* --- Shared surface treatment -------------------------------------------- */
+
+/* Every raised block gets the same three cues: a lit top edge, a soft sheen,
+   and a lift on hover. Applying them in one place is what makes the page
+   read as a single material rather than a stack of unrelated boxes. */
+.marketing-v2 :is(
+    .ecosystem-visual-card,
+    .use-case-panel,
+    .network-console,
+    .staking-preview,
+    .token-section,
+    .token-utility-strip,
+    .builder-primary,
+    .roadmap-card,
+    .community-cta,
+    .use-case-journey
+  ) {
+  position: relative;
+  background-image: var(--sheen);
+  box-shadow:
+    0 1px 0 0 #ffffff12 inset,
+    var(--lift);
+}
+
+.marketing-v2 :is(
+    .ecosystem-visual-card,
+    .network-console,
+    .builder-primary,
+    .roadmap-card,
+    .builder-resource-list > a,
+    .builder-resource-list > button,
+    .community-channels a
+  ) {
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 0.35s,
+    box-shadow 0.4s,
+    background-color 0.3s;
+}
+.marketing-v2 :is(
+    .ecosystem-visual-card,
+    .network-console,
+    .builder-primary,
+    .roadmap-card,
+    .builder-resource-list > a,
+    .builder-resource-list > button,
+    .community-channels a
+  ):hover {
+  transform: translateY(-4px);
+  border-color: #64e5e44d;
+  box-shadow:
+    0 1px 0 0 #ffffff1f inset,
+    var(--lift-hover);
+}
+
+/* Cursor-tracked highlight. JS writes --mx/--my; without it the layer stays
+   at zero opacity and nothing changes. */
+.marketing-v2 [data-spotlight] {
+  position: relative;
+}
+.marketing-v2 [data-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--spot, 0);
+  transition: opacity 0.4s;
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 0%),
+    #64e5e414,
+    transparent 68%
+  );
+}
+.marketing-v2 [data-spotlight] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Quick access -------------------------------------------------------- */
+
+.quick-access {
+  border-bottom-color: #ffffff0f;
+}
+.quick-access > a {
+  border-radius: 12px;
+  transition:
+    background 0.3s,
+    transform 0.3s;
+}
+.quick-access > a:hover {
+  background: #64e5e40a;
+  transform: translateY(-2px);
+}
+.quick-access-icon {
+  transition:
+    transform 0.35s,
+    color 0.35s;
+}
+.quick-access > a:hover .quick-access-icon {
+  color: #a6f0f0;
+  transform: scale(1.08);
+}
+.quick-access-arrow {
+  transition: transform 0.3s;
+}
+.quick-access > a:hover .quick-access-arrow {
+  transform: translate(3px, -3px);
+}
+
+/* --- Ecosystem ----------------------------------------------------------- */
+
+.ecosystem-visual-card {
+  border-color: #ffffff14;
+  background-color: #0a1317;
+}
+.ecosystem-image::after {
+  background:
+    linear-gradient(0deg, #0a1317, transparent 30%),
+    linear-gradient(180deg, #050c1080, transparent 45%);
+}
+.image-tag {
+  border-color: #ffffff1f;
+  background: #08161cb3;
+}
+.ecosystem-card-body h3 {
+  background: linear-gradient(170deg, #ffffff, #b3ccd2);
+  background-clip: text;
+  color: transparent;
+}
+.marketing-v2 .feature-chips span {
+  border-color: #ffffff1a;
+  background: #ffffff08;
+  color: #a5c4c9;
+  transition:
+    border-color 0.25s,
+    color 0.25s,
+    background 0.25s;
+}
+.marketing-v2 .feature-chips span:hover {
+  border-color: #64e5e44d;
+  background: #64e5e412;
+  color: #cdf6f4;
+}
+.capability-row h3 {
+  color: #e2eef1;
+}
+.capability-row p {
+  color: #9cb3ba;
+  font-size: 13px;
+}
+.capability-row > div {
+  padding: 16px 18px 16px 0;
+  border-radius: 12px;
+  transition: background 0.3s;
+}
+.capability-row > div:hover {
+  background: #ffffff05;
+}
+.capability-row svg {
+  transition: transform 0.35s;
+}
+.capability-row > div:hover svg {
+  transform: translateY(-2px);
+}
+
+/* --- Use cases ----------------------------------------------------------- */
+
+.use-case-tabs [data-slot="tabs-list"] {
+  border-color: #ffffff14;
+  background: linear-gradient(180deg, #0c161b, #0a1216);
+}
+.use-case-tabs [data-slot="tabs-trigger"] {
+  transition:
+    background 0.3s,
+    color 0.3s,
+    box-shadow 0.3s;
+}
+.use-case-tabs [data-slot="tabs-trigger"]:hover {
+  color: #cfeef0;
+  background: #ffffff08;
+}
+.use-case-tabs [data-slot="tabs-trigger"][data-state="active"] {
+  background: linear-gradient(165deg, #1e424a, #16333a);
+  color: #b2f7f1;
+  box-shadow:
+    0 1px 0 0 #ffffff1a inset,
+    0 8px 22px -12px #64e5e44d;
+}
+.use-case-panel {
+  border-color: #ffffff14;
+}
+.use-case-journey {
+  border-color: #ffffff14;
+  background: #0d1a2066;
+}
+.journey-number {
+  border-color: #ffffff1a;
+  background: linear-gradient(160deg, #1a3f47, #122c33);
+  color: #96e4e5;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+.use-case-journey li:hover .journey-number {
+  border-color: #64e5e459;
+  box-shadow: 0 0 18px -4px #64e5e459;
+}
+
+/* --- Network console ----------------------------------------------------- */
+
+.network-console {
+  border-color: #ffffff17;
+  background: linear-gradient(150deg, #0d1b2199, #080f14);
+}
+.console-top,
+.console-bottom {
+  border-color: #ffffff12;
+}
+.network-specs > div {
+  border-color: #ffffff0d;
+}
+.console-tag {
+  border-color: #64e5e433;
+  background: #64e5e412;
+  color: #93d9de;
+}
+.network-origin {
+  border-left-color: transparent;
+  position: relative;
+}
+.network-origin::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #64e5e4, #64e5e400);
+}
+.node-topology svg {
+  border-color: #ffffff1a;
+  background: linear-gradient(160deg, #16323c, #0f2229);
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+.node-topology > div:hover svg {
+  border-color: #64e5e459;
+  box-shadow: 0 0 22px -6px #64e5e46b;
+}
+
+/* --- Staking preview ----------------------------------------------------- */
+
+.marketing-v2 .staking-preview {
+  border-color: #ffffff1f;
+  background:
+    radial-gradient(ellipse at 100% 0%, #14444a80, transparent 62%),
+    linear-gradient(170deg, #0d1a1f, #091216);
+}
+.marketing-v2 .preview-value {
+  background: linear-gradient(170deg, #ffffff, #9fd4d6);
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.marketing-v2 .preview-label {
+  border-color: #64e5e433;
+  background: #64e5e40f;
+  color: #93d9de;
+  letter-spacing: 0.1em;
+}
+.mini-pool {
+  border-color: #ffffff0f;
+  padding-left: 2px;
+  padding-right: 2px;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+.mini-pool:hover {
+  background: #ffffff05;
+}
+.mini-pool strong {
+  background: linear-gradient(160deg, #b6fbf5, #55cfd4);
+  background-clip: text;
+  color: transparent;
+}
+.mini-pool strong small {
+  background: none;
+  color: #7f989f;
+  -webkit-text-fill-color: #7f989f;
+}
+.preview-bottom {
+  border-color: #ffffff0f;
+}
+.app-feature-links > a {
+  border-color: #ffffff0d;
+  border-radius: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-left: -12px;
+  transition: background 0.3s;
+}
+.app-feature-links > a:hover {
+  background: #ffffff05;
+}
+
+/* --- Tokenomics ---------------------------------------------------------- */
+
+.token-utility-strip {
+  border-color: #ffffff14;
+  background: linear-gradient(180deg, #0d181d, #0a1317);
+}
+.token-utility-strip > span + span {
+  border-left-color: #ffffff12;
+}
+.token-utility-strip > span {
+  transition: background 0.3s;
+}
+.token-utility-strip > span:hover {
+  background: #ffffff05;
+}
+.token-section {
+  border-color: #ffffff14;
+}
+.marketing-v2 .donut {
+  box-shadow:
+    0 0 90px -10px #64e5e42e,
+    0 0 0 1px #ffffff0f;
+}
+.marketing-v2 .donut-center {
+  background: radial-gradient(circle at 50% 40%, #14262c, #0a1418);
+  box-shadow: 0 0 0 1px #ffffff0f inset;
+}
+.marketing-v2 .donut-center strong {
+  background: linear-gradient(170deg, #ffffff, #9fd4d6);
+  background-clip: text;
+  color: transparent;
+}
+.allocation-row {
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -8px;
+  transition: background 0.25s;
+}
+.allocation-row:hover {
+  background: #ffffff06;
+}
+.allocation-swatch {
+  box-shadow: 0 0 10px -2px currentColor;
+}
+
+/* --- Builders ------------------------------------------------------------ */
+
+.builder-primary {
+  border-color: #ffffff1f;
+  background:
+    radial-gradient(ellipse at 100% 0%, #1a5a6b66, transparent 68%),
+    linear-gradient(165deg, #102128, #0a161b);
+}
+.builder-primary h3 {
+  background: linear-gradient(165deg, #ffffff, #c2dade 60%, #79c3cd);
+  background-clip: text;
+  color: transparent;
+}
+.builder-primary h3 span {
+  background: none;
+  -webkit-text-fill-color: #82bac6;
+}
+.resource-bottom {
+  border-color: #ffffff17;
+}
+.builder-resource-list > a,
+.builder-resource-list > button {
+  border-color: #ffffff12;
+  background: linear-gradient(170deg, #0d181e, #0a1418);
+  box-shadow: 0 1px 0 0 #ffffff0d inset;
+}
+.builder-resource-list > a > svg:last-child,
+.builder-resource-list > button > svg:last-child {
+  transition: transform 0.3s;
+}
+.builder-resource-list > a:hover > svg:last-child,
+.builder-resource-list > button:hover > svg:last-child {
+  transform: translate(3px, -3px);
+}
+
+/* --- Roadmap ------------------------------------------------------------- */
+
+/* Bridge the cards with a rail so six tiles read as one timeline. The line
+   starts at the node and overhangs the grid gap, except at the end of a row
+   where it fades out instead of dangling. */
+.marketing-v2 .roadmap-grid {
+  gap: 20px 16px;
+}
+.marketing-v2 .roadmap-card {
+  border-color: #ffffff12;
+  background: linear-gradient(170deg, #0c171d, #091216);
+  padding-top: 32px;
+  overflow: visible;
+}
+.marketing-v2 .roadmap-card::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, #64e5e4a3, #64e5e433 26%, #ffffff00 78%);
+}
+.marketing-v2 .roadmap-card::after {
+  content: "";
+  position: absolute;
+  opacity: 1;
+  top: 12px;
+  left: 16px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #64e5e4;
+  box-shadow:
+    0 0 0 4px #0a1216,
+    0 0 14px 1px #64e5e46b;
+  transition: box-shadow 0.35s;
+}
+.marketing-v2 .roadmap-card:hover::after {
+  box-shadow:
+    0 0 0 4px #0a1216,
+    0 0 24px 4px #64e5e4a3;
+}
+.marketing-v2 .roadmap-meta {
+  color: #8fdfe1;
+}
+.marketing-v2 .roadmap-meta span:last-child {
+  color: #7b939c;
+}
+.marketing-v2 .roadmap-card h3 {
+  color: #eaf5f6;
+}
+.marketing-v2 .roadmap-card p {
+  color: #97aeb6;
+}
+
+/* --- FAQ ----------------------------------------------------------------- */
+
+.marketing-v2 .faq-accordion [data-slot="accordion-item"] {
+  border-color: #ffffff0f;
+  border-radius: 12px;
+  padding: 0 16px;
+  margin-bottom: 4px;
+  transition: background 0.3s;
+}
+.marketing-v2 .faq-accordion [data-slot="accordion-item"]:hover,
+.marketing-v2 .faq-accordion [data-slot="accordion-item"]:has([data-state="open"]) {
+  background: #ffffff05;
+}
+.marketing-v2 .faq-accordion [data-slot="accordion-trigger"] {
+  font-weight: 500;
+}
+.marketing-v2 .faq-accordion [data-slot="accordion-trigger"]:hover {
+  color: #b7ecec;
+}
+
+/* --- Community ----------------------------------------------------------- */
+
+.marketing-v2 .community-cta {
+  position: relative;
+  overflow: hidden;
+  border-color: #ffffff1f;
+  background:
+    radial-gradient(ellipse at 100% 0%, #1e5f7166, transparent 62%),
+    radial-gradient(ellipse at 0% 100%, #14414f4d, transparent 60%),
+    linear-gradient(165deg, #102229, #0a161b);
+}
+.marketing-v2 .community-cta::before {
+  content: "";
+  position: absolute;
+  inset: -40% 55% 40% -20%;
+  pointer-events: none;
+  background: radial-gradient(circle, #64e5e412, transparent 62%);
+}
+.marketing-v2 .community-cta h2 {
+  background: linear-gradient(165deg, #ffffff, #cfe4e8);
+  background-clip: text;
+  color: transparent;
+}
+.marketing-v2 .community-cta h2 span {
+  background: none;
+  -webkit-text-fill-color: #7fc6d4;
+}
+.community-channels a {
+  border-color: #ffffff17;
+  background: #0c1c2399;
+}
+
+/* --- Footer -------------------------------------------------------------- */
+
+.marketing-v2 .site-footer {
+  position: relative;
+  overflow: hidden;
+  border-top-color: #ffffff12;
+  background: linear-gradient(180deg, #070c0e, #04080a);
+}
+.marketing-v2 .site-footer::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #64e5e433, transparent);
+}
+/* Only the crown of the letterforms shows above the bottom edge. */
+.footer-watermark {
+  position: absolute;
+  left: 50%;
+  bottom: -7.5vw;
+  transform: translateX(-50%);
+  font-size: 19vw;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #ffffff00, #ffffff0a 62%);
+  background-clip: text;
+  color: transparent;
+}
+.footer-column a,
+.footer-column button {
+  transition:
+    color 0.25s,
+    transform 0.25s;
+}
+.footer-column a:hover,
+.footer-column button:hover {
+  color: #64e5e4;
+  transform: translateX(3px);
+}
+.footer-bottom {
+  border-color: #ffffff0f;
+}
+
+/* --- Motion -------------------------------------------------------------- */
+
+@keyframes premium-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero entrance. Staggered so the eye lands on the headline first. */
+.marketing-v2 .hero-copy > * {
+  animation: premium-rise 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.marketing-v2 .hero-copy > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.marketing-v2 .hero-copy > *:nth-child(2) {
+  animation-delay: 0.14s;
+}
+.marketing-v2 .hero-copy > *:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.marketing-v2 .hero-copy > *:nth-child(4) {
+  animation-delay: 0.34s;
+}
+.marketing-v2 .hero-copy > *:nth-child(5) {
+  animation-delay: 0.44s;
+}
+.marketing-v2 .hero-visual {
+  animation: premium-rise 1.1s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .marketing-v2 .roadmap-card::before {
+    left: -14px;
+    right: -14px;
+  }
+}
+
+@media (max-width: 767px) {
+  .marketing-v2 .section,
+  .marketing-v2 .staking-intro {
+    padding-top: 58px;
+  }
+  .marketing-v2 .hero-copy::before {
+    inset: -60px -20px -20px -40px;
+    background-size: 46px 46px;
+  }
+  .marketing-v2::before {
+    background:
+      radial-gradient(70vw 50vw at 82% 2%, #0e5e6b40, transparent 62%),
+      radial-gradient(70vw 55vw at 6% 46%, #12414f28, transparent 62%);
+  }
+  .hero-orbit-label {
+    padding: 8px 12px 8px 11px;
+    border-radius: 12px;
+  }
+  .footer-watermark {
+    font-size: 30vw;
+    bottom: -12vw;
+  }
+  .marketing-v2 .roadmap-card::before {
+    display: none;
+  }
+  .marketing-v2 .roadmap-card::after {
+    top: 14px;
+  }
+  .marketing-v2 .roadmap-card {
+    padding-top: 30px;
+  }
+  .marketing-v2 :is(
+      .ecosystem-visual-card,
+      .network-console,
+      .builder-primary,
+      .roadmap-card,
+      .builder-resource-list > a,
+      .builder-resource-list > button,
+      .community-channels a
+    ):hover {
+    transform: none;
+  }
+  .marketing-v2 .faq-accordion [data-slot="accordion-item"] {
+    padding: 0 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing-v2 .hero-copy > *,
+  .marketing-v2 .hero-visual {
+    animation: none !important;
+  }
+  .scroll-progress {
+    display: none;
+  }
+  .marketing-v2 [data-spotlight]::after {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   App surfaces — the dashboard and admin shells.
+   The homepage carries the atmosphere; a data UI should stay quiet. What it
+   borrows is the material: a lit top edge, a soft sheen, and the same
+   focus and hover language.
+   ========================================================================== */
+
+.app-root {
+  --app-edge: #ffffff14;
+  --app-sheen: linear-gradient(180deg, #ffffff08, #ffffff00 110px);
+}
+
+.app-root :is(.panel, .stat-card, .pool-card, .sidebar-bottom) {
+  position: relative;
+  border-color: var(--app-edge);
+  background-image: var(--app-sheen);
+  box-shadow:
+    0 1px 0 0 #ffffff0d inset,
+    0 18px 44px -30px #000000b3;
+}
+
+.app-root .stat-card.primary-stat,
+.app-root .pool-card.featured {
+  border-color: #64e5e440;
+  box-shadow:
+    0 1px 0 0 #ffffff17 inset,
+    0 18px 44px -28px #000,
+    0 0 44px -22px #64e5e459;
+}
+
+.app-root .pool-card {
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 0.3s,
+    box-shadow 0.35s;
+}
+.app-root .pool-card:hover {
+  transform: translateY(-3px);
+  border-color: #64e5e44d;
+  box-shadow:
+    0 1px 0 0 #ffffff1a inset,
+    0 24px 54px -26px #000,
+    0 0 40px -20px #64e5e459;
+}
+
+.app-root .stat-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The sidebar reads as a distinct plane rather than the same flat black. */
+.app-root .app-sidebar {
+  border-right-color: var(--app-edge);
+  background: linear-gradient(180deg, #0a1114, #070c0e);
+}
+.app-root .app-sidebar [data-slot="sidebar-menu-button"] {
+  transition:
+    background 0.22s,
+    color 0.22s;
+}
+.app-root .app-sidebar [data-slot="sidebar-menu-button"]:hover {
+  background: #ffffff08;
+  color: #d3e6e9;
+}
+.app-root .app-sidebar [data-slot="sidebar-menu-button"][data-active="true"] {
+  position: relative;
+  background: linear-gradient(90deg, #15343c, #12272d);
+  box-shadow: 0 1px 0 0 #ffffff12 inset;
+}
+.app-root .app-sidebar [data-slot="sidebar-menu-button"][data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 9px;
+  bottom: 9px;
+  width: 2px;
+  border-radius: 0 2px 2px 0;
+  background: #64e5e4;
+  box-shadow: 0 0 12px 1px #64e5e47a;
+}
+
+.app-root .app-header {
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.app-root .demo-banner {
+  border-color: var(--app-edge);
+  background: linear-gradient(180deg, #112027, #0d1a20);
+  box-shadow: 0 1px 0 0 #ffffff0d inset;
+}
+
+.app-root .data-table tbody tr {
+  transition: background 0.2s;
+}
+.app-root .data-table tbody tr:hover {
+  background: #ffffff05;
+}
+
+.app-root .form-input:focus,
+.app-root .search-field input:focus {
+  box-shadow: 0 0 0 3px #64e5e41f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-root .pool-card:hover {
+    transform: none;
+  }
+}

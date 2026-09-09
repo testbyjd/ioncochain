@@ -32,31 +32,160 @@ import { copyText } from "./shared";
 export function HomepageMotion() {
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!("IntersectionObserver" in window)) return;
+    const calm = () => preference.matches;
+    const root = document.querySelector<HTMLElement>(".marketing-v2");
+    const cleanups: Array<() => void> = [];
     const animations = new Set<Animation>();
+
+    /* --- Header state and scroll progress ------------------------------- */
+    const progress = document.querySelector<HTMLElement>(".scroll-progress");
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        if (root) root.dataset.scrolled = String(window.scrollY > 24);
+        if (progress) {
+          const travel =
+            document.documentElement.scrollHeight - window.innerHeight;
+          progress.style.setProperty(
+            "--progress",
+            String(travel > 0 ? Math.min(1, window.scrollY / travel) : 0),
+          );
+        }
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    cleanups.push(() => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    });
+
+    if (!("IntersectionObserver" in window)) return () => {};
+
+    /* --- Staggered section reveals -------------------------------------- */
+    const rise = (target: Element, delay: number) => {
+      if (calm() || !("animate" in target)) return;
+      const animation = target.animate(
+        [
+          { opacity: 0, transform: "translateY(24px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 720,
+          delay,
+          easing: "cubic-bezier(.2,.7,.2,1)",
+          fill: "backwards",
+        },
+      );
+      animations.add(animation);
+      animation.onfinish = () => animations.delete(animation);
+    };
     const reveal = new IntersectionObserver(
       (entries) => {
         entries.forEach(({ target, isIntersecting }) => {
           if (!isIntersecting) return;
           reveal.unobserve(target);
-          if (preference.matches || !("animate" in target)) return;
-          const animation = target.animate(
-            [
-              { opacity: 0.35, transform: "translateY(16px)" },
-              { opacity: 1, transform: "translateY(0)" },
-            ],
-            { duration: 650, easing: "cubic-bezier(.2,.7,.2,1)" },
-          );
-          animations.add(animation);
-          animation.onfinish = () => animations.delete(animation);
+          const children = Array.from(target.children);
+          if (children.length > 1 && children.length <= 8)
+            children.forEach((child, i) => rise(child, i * 70));
+          else rise(target, 0);
         });
       },
-      { threshold: 0.08 },
+      { threshold: 0.06, rootMargin: "0px 0px -6% 0px" },
     );
     document
       .querySelectorAll(".marketing-site [data-reveal]")
       .forEach((el) => reveal.observe(el));
+    cleanups.push(() => reveal.disconnect());
 
+    /* --- Counting stats -------------------------------------------------- */
+    const counters = new IntersectionObserver((entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        if (!isIntersecting) return;
+        counters.unobserve(target);
+        const el = target as HTMLElement;
+        const to = Number(el.dataset.countTo);
+        if (!Number.isFinite(to) || calm()) return;
+        const suffix = el.dataset.countSuffix ?? "";
+        const started = performance.now();
+        const step = (now: number) => {
+          const t = Math.min(1, (now - started) / 1100);
+          const eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = Math.round(to * eased).toLocaleString() + suffix;
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+    });
+    document
+      .querySelectorAll("[data-count-to]")
+      .forEach((el) => counters.observe(el));
+    cleanups.push(() => counters.disconnect());
+
+    /* --- Cursor-tracked highlight on raised surfaces --------------------- */
+    const spotlights =
+      document.querySelectorAll<HTMLElement>("[data-spotlight]");
+    const fine = window.matchMedia("(pointer: fine)");
+    const onMove = (event: PointerEvent) => {
+      const el = event.currentTarget as HTMLElement;
+      const box = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${event.clientX - box.left}px`);
+      el.style.setProperty("--my", `${event.clientY - box.top}px`);
+      el.style.setProperty("--spot", "1");
+    };
+    const onLeave = (event: PointerEvent) =>
+      (event.currentTarget as HTMLElement).style.setProperty("--spot", "0");
+    if (fine.matches && !calm())
+      spotlights.forEach((el) => {
+        el.addEventListener("pointermove", onMove);
+        el.addEventListener("pointerleave", onLeave);
+        cleanups.push(() => {
+          el.removeEventListener("pointermove", onMove);
+          el.removeEventListener("pointerleave", onLeave);
+        });
+      });
+
+    /* --- Active section in the header nav -------------------------------- */
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>(".site-nav a[href*='#']"),
+    );
+    const targets = links
+      .map((link) => {
+        const id = link.getAttribute("href")?.split("#")[1];
+        const section = id ? document.getElementById(id) : null;
+        return section ? { link, section } : null;
+      })
+      .filter(
+        (pair): pair is { link: HTMLAnchorElement; section: HTMLElement } =>
+          Boolean(pair),
+      );
+    /* Whichever tracked section the reading line sits in wins. Sections the
+       nav does not list — and the footer — leave every link inactive rather
+       than stranding the highlight on whatever was seen last. */
+    const markActive = () => {
+      const line = window.scrollY + window.innerHeight * 0.4;
+      const current = targets.find(({ section }) => {
+        const top = section.offsetTop;
+        return line >= top && line < top + section.offsetHeight;
+      });
+      targets.forEach(({ link }) => delete link.dataset.active);
+      if (current) current.link.dataset.active = "true";
+    };
+    if (targets.length) {
+      markActive();
+      window.addEventListener("scroll", markActive, { passive: true });
+      window.addEventListener("resize", markActive);
+      cleanups.push(() => {
+        window.removeEventListener("scroll", markActive);
+        window.removeEventListener("resize", markActive);
+      });
+    }
+
+    /* --- Pause the hero loop when it cannot be seen ---------------------- */
     const scene = document.querySelector<HTMLElement>(".hero-visual");
     let inView = true;
     const pauseWhenHidden = () => {
@@ -68,17 +197,23 @@ export function HomepageMotion() {
     });
     if (scene) visibility.observe(scene);
     document.addEventListener("visibilitychange", pauseWhenHidden);
+    cleanups.push(() => {
+      visibility.disconnect();
+      document.removeEventListener("visibilitychange", pauseWhenHidden);
+    });
+
     const onPreference = () => {
       if (preference.matches)
         animations.forEach((animation) => animation.cancel());
     };
     preference.addEventListener("change", onPreference);
+    cleanups.push(() =>
+      preference.removeEventListener("change", onPreference),
+    );
+
     return () => {
-      reveal.disconnect();
-      visibility.disconnect();
       animations.forEach((animation) => animation.cancel());
-      preference.removeEventListener("change", onPreference);
-      document.removeEventListener("visibilitychange", pauseWhenHidden);
+      cleanups.forEach((fn) => fn());
     };
   }, []);
   return null;
@@ -147,7 +282,7 @@ export function EcosystemSection() {
         </p>
       </div>
       <div className="ecosystem-visual-grid">
-        <article className="ecosystem-visual-card">
+        <article className="ecosystem-visual-card" data-spotlight>
           <div className="ecosystem-image">
             <img
               src="/images/ionco-network.webp"
@@ -186,7 +321,7 @@ export function EcosystemSection() {
             </a>
           </div>
         </article>
-        <article className="ecosystem-visual-card">
+        <article className="ecosystem-visual-card" data-spotlight>
           <div className="ecosystem-image">
             <img
               src="/images/ionco-ownership.webp"
@@ -345,7 +480,7 @@ export function UseCasesSection() {
           ))}
         </TabsList>
         {useCases.map((item) => (
-          <TabsContent value={item.id} key={item.id} className="use-case-panel">
+          <TabsContent value={item.id} key={item.id} className="use-case-panel" data-spotlight>
             <div className="use-case-copy">
               <span className="mini-kicker">
                 <Sparkles /> ECOSYSTEM VISION
@@ -447,7 +582,7 @@ export function NetworkSection({
             Read about the infrastructure <ArrowUpRight />
           </a>
         </div>
-        <div className="network-console">
+        <div className="network-console" data-spotlight>
           <div className="console-top">
             <span>
               <Network /> NETWORK SPECIFICATION
@@ -545,6 +680,7 @@ export function BuilderSection({
       <div className="builder-grid">
         <a
           className="builder-primary"
+          data-spotlight
           href={LINKS.whitepaper}
           target="_blank"
           rel="noreferrer"
