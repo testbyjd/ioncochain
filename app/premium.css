@@ -1206,3 +1206,37 @@
     transform: none;
   }
 }
+
+/* --- App fixes ----------------------------------------------------------- */
+
+/* The featured pool carries a BALANCED badge, which makes its heading row
+   taller than its neighbours' and pushed the APY, facts and Stake button
+   five pixels below theirs across the whole row. Reserve the badge's height
+   on every card so the three columns line up. */
+.app-root .pool-heading {
+  min-height: 26px;
+}
+
+/* Below 1000px the "Workspace" label is hidden, but the chevron after it was
+   only hidden below 768px — leaving a separator pointing at nothing. */
+@media (max-width: 1000px) {
+  .app-root .app-header .app-breadcrumb > svg {
+    display: none;
+  }
+}
+
+/* On a narrow screen the panel's action wrapped to two lines and landed in
+   the middle of the description. Stack it under the heading instead. */
+@media (max-width: 767px) {
+  .app-root .panel-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .app-root .panel-title > * {
+    min-width: 0;
+  }
+  .app-root .panel-title .text-link {
+    white-space: nowrap;
+  }
+}
