@@ -6,7 +6,8 @@ A mobile-first redesign of [ioncochain.com](https://ioncochain.com), with a publ
 
 - Next.js 16 App Router, React 19, and TypeScript
 - Tailwind CSS 4 and shadcn/ui (Radix primitives)
-- Locally hosted variable Manrope font; responsive WebP hero artwork
+- three.js WebGL stage behind the homepage, loaded lazily on the client
+- Locally hosted variable Manrope and JetBrains Mono fonts
 - Vinext / Cloudflare Workers build for the private review deployment
 
 This is an interactive **frontend demo**. Wallets, staking products, prices, trades, identities, and admin permissions are simulated. No PHP server is required for the mock experience. There are no wallet signatures, live orders, deposits, private keys, or server-side accounts.
@@ -33,7 +34,7 @@ The Next.js app uses the same route components and styles as the private review 
 
 | Route                 | Experience                                                                                      |
 | --------------------- | ----------------------------------------------------------------------------------------------- |
-| `/`                   | Public website, ecosystem, staking introduction, tokenomics, historical roadmap, FAQ, resources |
+| `/`                   | Scroll-driven story: hero, the chain, INC, the app, the journey, community, footer              |
 | `/dashboard`          | Portfolio overview, allocation, illustrative history, pools, recent activity                    |
 | `/dashboard/staking`  | Pool selection, review/confirm, positions, unlock rules, reward claims                          |
 | `/dashboard/trade`    | Buy/sell INC, fixed demo rate, fees, quote review, simulated settlement                         |
@@ -83,4 +84,4 @@ npm run test:render
 
 Before handling real users or funds, replace the demo provider with authenticated server endpoints and reviewed wallet/contract integrations. Add server-enforced admin roles, durable transactional storage, immutable audit records, verified network configuration, agreed staking terms, and exchange/payment/KYC integrations as applicable. A PHP 8.2 API can serve this boundary if that is the chosen backend; no unconnected PHP placeholder is presented as a working service here.
 
-The design supports keyboard focus, dialog focus trapping, touch navigation, reduced motion, local fonts, responsive imagery, and horizontally scrollable data tables. Generated hero artwork is a decorative brand asset, not a diagram of the real network.
+The design supports keyboard focus, dialog focus trapping, touch navigation, reduced motion, local fonts, and horizontally scrollable data tables. The homepage's animated block field is a decorative brand asset, not a diagram of the real network; the server-rendered copy is complete without it.

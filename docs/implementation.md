@@ -3,7 +3,9 @@
 ## Structure
 
 - `app/`: public and workspace route entry points and layouts; real Next.js App Router routes.
-- `components/ionco/marketing.tsx`: public site and anchored sections.
+- `components/ionco/marketing.tsx`: public site — header, six story chapters, footer.
+- `components/ionco/story.tsx`: scroll plumbing for the homepage (chapter progress, activation, counter, header state) and the lazy stage loader.
+- `components/ionco/stage.ts`: the three.js WebGL stage — instanced blocks, six formations, camera moves.
 - `components/ionco/app-shell.tsx`: desktop sidebar, mobile navigation, workspace header.
 - `components/ionco/dashboard.tsx`: member views and transaction flows.
 - `components/ionco/admin.tsx`: administration demo views.
@@ -31,10 +33,10 @@ CSV downloads escape quotes and neutralize spreadsheet-formula prefixes in strin
 
 The private preview uses the bundled Vinext/Cloudflare build. The repository also supports standard Next.js scripts. The admin route is deliberately a demo without authentication. Do not mistake private preview access, frontend controls, or browser storage for a production authorization or custody implementation.
 
-## Expanded homepage
+## Homepage story
 
-Homepage sections live in `components/ionco/marketing.tsx` and `marketing-sections.tsx`; the visual refinements are isolated in `app/marketing.css`. The page includes quick access links, two original visual ecosystem cards, four keyboard-accessible use-case tabs, published network specifications and topology, dashboard entry points, token utilities and allocation, builder resources, historical roadmap, FAQs, and community channels.
+The homepage is a scroll-driven story in the style of a product launch page: one fixed WebGL stage behind six full-height chapters (hero, the chain, INC, the app, the journey, the next chapter), each carrying a single glass panel of copy. Copy is deliberately short; the detail lives in the dashboard, the whitepaper, and the network dialog.
 
-The hero uses a content-sized grid instead of the earlier fixed 890-pixel mobile minimum. Mobile section spacing is 44 pixels, with stacked layouts and reserved image dimensions. The two additional images use responsive WebP sources and lazy loading. No dependency was added.
+`components/ionco/stage.ts` renders one `InstancedMesh` of blocks with a custom edge-glow shader, additive glow sprites, dust, and a fading ground grid. Each chapter defines a formation (orbit, lanes, coin, wall, helix, field) plus a camera position. Scroll position maps to a continuous chapter index; the stage eases toward it and morphs blocks between the two neighbouring formations with a per-block stagger. The stage is imported dynamically after hydration, so three.js never runs on the server, and the page reads correctly without it. Rendering pauses in hidden tabs, pixel ratio is capped by a pixel budget, block counts drop on coarse-pointer devices, and reduced motion freezes the time-based animation while keeping the scroll-driven morph.
 
-Scroll-entry effects progressively enhance already-visible server-rendered content. Ambient hero motion can be paused, stops while offscreen or in a hidden tab, and respects the operating system’s reduced-motion preference. Use-case tabs use the existing shadcn/Radix primitive. Existing dashboard state, CMS fields, and admin behavior are preserved.
+`components/ionco/story.tsx` owns the DOM side: chapter progress from section offsets, `IntersectionObserver` activation of panels, the fixed chapter counter, the header's scrolled state, the progress bar, and the active nav link. `app/story.css` holds the chapter layout; `marketing.css` and `premium.css` keep only the header, buttons, atmosphere, and footer rules that the story still uses. The hero headline, description, and announcement continue to come from the admin content editor.
